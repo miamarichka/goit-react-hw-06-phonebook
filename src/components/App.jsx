@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_CONTACT, DELETE_CONTACT } from '../redux/store';
 import { Form } from './Form/Form';
@@ -45,14 +45,6 @@ export const App = () => {
       : dispatch(ADD_CONTACT({ name, number }));
   };
 
-  // const addContact = (contactName, contactNumber) => {
-  //   const contact = {
-  //     name: contactName,
-  //     number: contactNumber,
-  //   };
-  //   setContacts(prevState => [contact, ...prevState]);
-  // };
-
   const changeFilter = e => {
     setFilter(e.currentTarget.value);
   };
@@ -65,10 +57,6 @@ export const App = () => {
   };
 
   const deleteContact = contactId => {
-    // setContacts(prevState => {
-    //   return prevState.filter(
-    //     contact => contactId !== contact.name
-    // )});
     dispatch(DELETE_CONTACT(contactId))
   };
 
