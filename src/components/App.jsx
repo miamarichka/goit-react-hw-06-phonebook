@@ -31,10 +31,10 @@ export const App = () => {
   };
 
   const checkNewContact = (name, number) => {
-    const isContactNameExist = phonebookContacts.some(
+    const isContactNameExist = phonebookContacts.phonebook.some(
       contact => contact.name === name
     );
-    const isContactNumberExist = phonebookContacts.some(
+    const isContactNumberExist = phonebookContacts.phonebook.some(
       contact => contact.number === number
     );
 
@@ -51,7 +51,8 @@ export const App = () => {
 
   const getFilteredContacts = () => {
     const normalizedFilter = filter.toLowerCase();
-    return phonebookContacts.filter(contact =>
+    console.log(phonebookContacts.phonebook)
+    return phonebookContacts.phonebook.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
@@ -69,7 +70,7 @@ export const App = () => {
           <Form onSubmit={formSubmitHandler} />
           <h2 className="contact-list__title title">Contacts</h2>
           <Filter filter={filter} onChange={changeFilter} />
-          {!!phonebookContacts.length && (
+          {!!phonebookContacts.phonebook.length && (
             <ContactsList
               contactsList={filteredConctacts}
               onDeleteContact={deleteContact}
