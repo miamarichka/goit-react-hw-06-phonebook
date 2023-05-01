@@ -1,4 +1,4 @@
-import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
+import { combineReducers, configureStore} from "@reduxjs/toolkit";
 import { composeWithDevTools } from "redux-devtools-extension";
 import {
   persistStore, persistReducer,
@@ -9,40 +9,25 @@ import {
   PURGE,
   REGISTER,} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { phonebookReducer } from "./phoneBook";
+import { filterReducer } from "./filter";
 
 const persistConfig = {
-  key: 'root',
+  key: 'contacts',
   version: 1,
   storage,
-  whitelist: ['phonebook'],
+  blacklist: ['filter'],
 }
 
-const phonebookSlice = createSlice({
-  name: 'contacts',
-  initialState: [],
-  reducers: {
-    ADD_CONTACT (state, action){state.push(action.payload)},
-    DELETE_CONTACT(state, action) {
-      return state.filter(contact => {
-        return contact.name !== action.payload
-    })},
-  },
-})
-
-export const { ADD_CONTACT, DELETE_CONTACT } = phonebookSlice.actions
-
-export const phonebookReducer = phonebookSlice.reducer;
-
 const rootReducer = combineReducers({
-phonebook: phonebookSlice.reducer,
+  phonebook: phonebookReducer,
+  filter: filterReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    phonebook: persistedReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

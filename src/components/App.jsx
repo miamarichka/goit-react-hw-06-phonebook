@@ -1,29 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CONTACT, DELETE_CONTACT } from '../redux/store';
+import { ADD_CONTACT, DELETE_CONTACT } from '../redux/phoneBook';
+import { UPDATE_FILTER } from 'redux/filter';
 import { Form } from './Form/Form';
 import { Filter } from './Filter/Filter';
 import { ContactsList } from './ContactList/ContactsList';
+import { getContacts, getFilter } from 'redux/selectors';
 
-// const STORAGE_KEY = 'contacts';
-
-// const useLocalStorage = (key, defaultValue) => {
-//   const [state, setState] = useState(() => {
-//     return JSON.parse(window.localStorage.getItem(key)) ?? defaultValue;
-//   });
-
-//   useEffect(() => {
-//     window.localStorage.setItem(key, JSON.stringify(state));
-// }, [key, state])
-  
-//   return [state, setState]
-// }
 export const App = () => {
-  const phonebookContacts = useSelector(state => state.phonebook)
-  console.log(phonebookContacts)
-  // const [contacts, setContacts] = useLocalStorage(STORAGE_KEY, [])
-  const [filter, setFilter] = useState('')
-  const dispatch = useDispatch()
+  const phonebookContacts = useSelector(getContacts);
+  const filterSearch = useSelector(getFilter);
+  const dispatch = useDispatch();
 
   const formSubmitHandler = data => {
     const { name, number } = data;
@@ -31,10 +18,10 @@ export const App = () => {
   };
 
   const checkNewContact = (name, number) => {
-    const isContactNameExist = phonebookContacts.phonebook.some(
+    const isContactNameExist = phonebookContacts.some(
       contact => contact.name === name
     );
-    const isContactNumberExist = phonebookContacts.phonebook.some(
+    const isContactNumberExist = phonebookContacts.some(
       contact => contact.number === number
     );
 
@@ -45,16 +32,16 @@ export const App = () => {
       : dispatch(ADD_CONTACT({ name, number }));
   };
 
-  const changeFilter = e => {
-    setFilter(e.currentTarget.value);
+  const changeFilter = ({ target: { value } }) => {
+    dispatch(UPDATE_FILTER(value))
   };
 
   const getFilteredContacts = () => {
-    const normalizedFilter = filter.toLowerCase();
-    console.log(phonebookContacts.phonebook)
-    return phonebookContacts.phonebook.filter(contact =>
+    const normalizedFilter = filterSearch.toLowerCase();
+    return phonebookContacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
+
   };
 
   const deleteContact = contactId => {
@@ -69,8 +56,8 @@ export const App = () => {
           <h1 className="phonebook__title title">PhoneBook</h1>
           <Form onSubmit={formSubmitHandler} />
           <h2 className="contact-list__title title">Contacts</h2>
-          <Filter filter={filter} onChange={changeFilter} />
-          {!!phonebookContacts.phonebook.length && (
+          <Filter filter={filterSearch} onChange={changeFilter} />
+          {!!phonebookContacts.length && (
             <ContactsList
               contactsList={filteredConctacts}
               onDeleteContact={deleteContact}
